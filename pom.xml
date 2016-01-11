@@ -11,6 +11,7 @@
 	<modules>
 		<module>eob1-svg-editor-parent</module>
 		<module>eob1-svg-editor-core</module>
+		<module>eob1-svg-editor-ui</module>
 	</modules>
 
 </project>
