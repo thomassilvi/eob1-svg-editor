@@ -4,7 +4,7 @@
 	<groupId>org.emeriss</groupId>
 	<artifactId>eob1-svg-editor-aggregator</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0</version>
+	<version>1.1-SNAPSHOT</version>
 	<name>eob1-svg-editor-aggregator</name>
 
 	<modules>
@@ -17,7 +17,7 @@
 		<connection>scm:git:git@github.com:thomassilvi/eob1-svg-editor.git</connection>
 		<url>scm:git:git@github.com:thomassilvi/eob1-svg-editor.git</url>
 		<developerConnection>scm:git:git@github.com:thomassilvi/eob1-svg-editor.git</developerConnection>
-	  <tag>1.0</tag>
+	  <tag>HEAD</tag>
   </scm>
 
 	<build>

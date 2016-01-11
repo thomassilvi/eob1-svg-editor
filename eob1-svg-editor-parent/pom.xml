@@ -4,7 +4,7 @@
 	<groupId>org.emeriss</groupId>
 	<artifactId>eob1-svg-editor-parent</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0</version>
+	<version>1.1-SNAPSHOT</version>
 	<name>eob1-svg-editor-parent</name>
 
 	<properties>
