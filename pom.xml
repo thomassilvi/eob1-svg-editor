@@ -14,5 +14,21 @@
 		<module>eob1-svg-editor-ui</module>
 	</modules>
 
+	<scm>
+		<connection>scm:git:git@github.com:thomassilvi/eob1-svg-editor.git</connection>
+		<url>scm:git:git@github.com:thomassilvi/eob1-svg-editor.git</url>
+		<developerConnection>scm:git:git@github.com:thomassilvi/eob1-svg-editor.git</developerConnection>
+	</scm>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.3</version>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>
 

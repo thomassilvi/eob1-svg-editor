@@ -1,8 +1,17 @@
 # eob1-svg-editor
 Savegame editor for Eye of the Beholder 1
 
-# 1.0-SNAPSHOT
-only for character of the party, you can change
+> to build:
+mvn install
+
+> to launch
+cd eob1-svg-editor-ui
+mvn -q exec:java &
+
+
+# 1.0
+
+You can change only for active character 
 - the name
 - the ability score for strength, intelligence, wisdom, dexterity, constitution and charisma
 
