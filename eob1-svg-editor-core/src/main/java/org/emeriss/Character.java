@@ -12,6 +12,9 @@ public class Character {
     public static final byte NULL_EXCEPTIONAL_SCORE = 0;
     public static final byte MIN_EXCEPTIONAL_SCORE = 0;
     public static final byte MAX_EXCEPTIONAL_SCORE = 100;
+    public static final byte NULL_FOOD_PCT = 0;
+    public static final byte MIN_FOOD_PCT = 0;
+    public static final byte MAX_FOOD_PCT = 100;
     
     private static final Logger LOGGER = Logger.getLogger(Character.class);
     

@@ -19,6 +19,7 @@ public class CharacterPanel extends Panel {
     private TextField characterClass, alignment, race, gender;
     private ExceptionalAbilityPanel strength;
     private ByteSelectorPanel intelligence, wisdom, dexterity, constitution, charisma;
+    private ByteSelectorPanel foodPct;
     
     public CharacterPanel() {
         super();
@@ -83,7 +84,15 @@ public class CharacterPanel extends Panel {
         panelCharacterStats.add(new Label("Charisma"),getGridBagConstraint(0,10));
         charisma = new ByteSelectorPanel(Character.NULL_SCORE, Character.MIN_SCORE, Character.MAX_SCORE);
         panelCharacterStats.add(charisma,getGridBagConstraint(1,10));
+
+	// misc
+
+        panelCharacterStats.add(new Label("Food %"),getGridBagConstraint(0,11));
+        foodPct = new ByteSelectorPanel(Character.NULL_FOOD_PCT, Character.MIN_FOOD_PCT, Character.MAX_FOOD_PCT);
+        panelCharacterStats.add(foodPct,getGridBagConstraint(1,11));
         
+	//
+
         panelCharacterProperties.add(new Label("Character info"),getGridBagConstraint(0,0));
         panelCharacterProperties.add(panelCharacterStats,getGridBagConstraint(0,1));
 
@@ -111,6 +120,7 @@ public class CharacterPanel extends Panel {
         dexterity.setValue(c.getDexterity());
         constitution.setValue(c.getConstitution());
         charisma.setValue(c.getCharisma());
+        foodPct.setValue(c.getFood());
     }
     
     public void active() {
@@ -139,6 +149,8 @@ public class CharacterPanel extends Panel {
             c.setDexterity(dexterity.getValue());
             c.setConstitution(constitution.getValue());
             c.setCharisma(charisma.getValue());
+            // misc
+            c.setFood(foodPct.getValue());
     }
     
 }

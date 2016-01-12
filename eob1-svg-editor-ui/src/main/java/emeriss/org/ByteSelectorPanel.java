@@ -19,7 +19,13 @@ public class ByteSelectorPanel extends Panel {
         this.minValue = minValue;
         this.maxValue = maxValue;
         value = nullValue;
-        tfValue = new TextField("",2);
+        int nColumns=1;
+        if (maxValue>99) {
+            nColumns=3;
+        } else if (maxValue>9) {
+            nColumns=2;
+        }       
+        tfValue = new TextField("",nColumns);
         tfValue.setEditable(false);
         add(tfValue);
         Button plus = new Button("+");

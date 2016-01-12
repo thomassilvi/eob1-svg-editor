@@ -141,7 +141,12 @@ public class SaveGame {
             data[fpos+26] = characters[i].getCharisma();
             data[fpos+25] = data[fpos+26];
 
+            // misc
+
+            data[fpos+35] = characters[i].getFood();
+
             // next character
+
             fpos += 243;
         }
         
