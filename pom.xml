@@ -17,8 +17,8 @@
 		<connection>scm:git:git@github.com:thomassilvi/eob1-svg-editor.git</connection>
 		<url>scm:git:git@github.com:thomassilvi/eob1-svg-editor.git</url>
 		<developerConnection>scm:git:git@github.com:thomassilvi/eob1-svg-editor.git</developerConnection>
-	  <tag>HEAD</tag>
-  </scm>
+		<tag>HEAD</tag>
+	</scm>
 
 	<build>
 		<plugins>
