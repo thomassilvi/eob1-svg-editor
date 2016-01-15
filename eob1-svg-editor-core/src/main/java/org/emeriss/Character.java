@@ -42,7 +42,7 @@ public class Character {
         alignment = Alignment.UNDEFINED;
         gender = Gender.UNDEFINED;
         race = Race.UNDEFINED;
-        characterClass = CharacterClass.UNDEFINED;
+        characterClass = CharacterClassFactory.getClass(-1);
         hitPoints = -1;
         maxHitPoints = -1;
         food = -1;
@@ -218,4 +218,7 @@ public class Character {
         this.characterClass = characterClass;
     }
 
+    public boolean isMultiClass() {
+        return this.characterClass.isMultiClass();
+    }
 }

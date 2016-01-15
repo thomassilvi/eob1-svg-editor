@@ -14,6 +14,9 @@ public class SaveGame {
     public static final int MAX_ACTIVE_CHARACTERS = 4;
 
     private static final Logger LOGGER = Logger.getLogger(SaveGame.class);
+    private static final int OFFSET_XP_1 = 0x27;
+    private static final int OFFSET_LVL_1 = 0x24;    
+    
     protected Character[] characters;
     protected byte[] data;
     protected String savedFileName;
@@ -30,13 +33,14 @@ public class SaveGame {
     }
     
     public void load(String fileName) throws SaveGameException {
+        CharacterClass ccTmp;
+        int fpos,i;
+        byte bGender;
+        
         try {
             Path p = Paths.get(fileName);
             data = Files.readAllBytes(p);
-            
-            int fpos,i;
-            byte bGender;
-    
+
             fpos = 0;
             
             for (i=0;i<MAX_CHARACTERS;i++)
@@ -61,10 +65,22 @@ public class SaveGame {
                 bGender =  (byte) (data[fpos+31] % 2);
                 characters[i].setRace(Race.valueOf(data[fpos+31] - bGender));
                 characters[i].setGender(Gender.valueOf(bGender));
-                characters[i].setCharacterClass(CharacterClass.valueOf(data[fpos+32]));
+
                 characters[i].setAlignment(Alignment.valueOf(data[fpos+33]));
                 characters[i].setPortrait(data[fpos+34]);
                 characters[i].setFood(data[fpos+35]);
+                
+                // set class properties
+                
+                ccTmp = CharacterClassFactory.getClass(data[fpos+32]);
+                characters[i].setCharacterClass(ccTmp);
+                
+                if (ccTmp.isMultiClass()) {
+                    loadMultiCharacterClass(ccTmp,fpos);
+                } else {
+                    loadSingleCharacterClass(ccTmp,fpos);
+                }
+                
                 // next character
                 fpos += 243;
             }
@@ -141,12 +157,19 @@ public class SaveGame {
             data[fpos+26] = characters[i].getCharisma();
             data[fpos+25] = data[fpos+26];
 
+            // save class properties
+
+            if (characters[i].getCharacterClass().isMultiClass()) {
+                writeMultiCharacterClass(characters[i].getCharacterClass(),fpos);
+            } else {
+                writeSingleCharacterClass(characters[i].getCharacterClass(),fpos);
+            }
+
             // misc
 
             data[fpos+35] = characters[i].getFood();
 
             // next character
-
             fpos += 243;
         }
         
@@ -173,5 +196,50 @@ public class SaveGame {
         this.loaded = loaded;
     }
 
-}
+    public void loadSingleCharacterClass (CharacterClass c, int fpos) {
+        CharacterSingleClass cscTmp = (CharacterSingleClass) c;
+        cscTmp.setLevel(data[fpos+OFFSET_LVL_1]);
+        int xpTmp = readInt(fpos+OFFSET_XP_1);
+        cscTmp.setExperience(xpTmp);        
+    }
+    
+    public void loadMultiCharacterClass (CharacterClass c, int fpos) {
+        CharacterMultiClass cmcTmp = (CharacterMultiClass) c;
+        int xpTmp;
+        
+        for (byte j=0;j<cmcTmp.getClassCount();j++) {
+            cmcTmp.getClassAt(j).setLevel(data[fpos+OFFSET_LVL_1+j]);
+            xpTmp = readInt(fpos+OFFSET_XP_1+(j*4));
+            cmcTmp.getClassAt(j).setExperience(xpTmp);
+        }
+    }
+    
+    public int readInt(int fpos) {
+        return SaveGameTools.bytesToInt(data[fpos], 
+            data[fpos+1], data[fpos+2], data[fpos+3]);
+    }
+    
+    public void writeInt(int value, int fpos) {
+        byte[] bytesXpTmp = SaveGameTools.intTo4Bytes(value);
+        for (byte i=0;i<4;i++) {
+            data[fpos+i] = bytesXpTmp[i];
+        }        
+    }
+    
+    public void writeSingleCharacterClass (CharacterClass c, int fpos) {
+        CharacterSingleClass cscTmp = (CharacterSingleClass) c;
+        writeInt(cscTmp.getExperience(),fpos+OFFSET_XP_1);
+    }
 
+    public void writeMultiCharacterClass(CharacterClass c, int fposInitial) {
+        CharacterMultiClass cmcTmp = (CharacterMultiClass) c;
+        CharacterSingleClass cscTmp;
+        int fpos = fposInitial + OFFSET_XP_1;
+        for (byte i=0;i<cmcTmp.getClassCount();i++) {
+            cscTmp = cmcTmp.getClassAt(i);
+            writeInt(cscTmp.getExperience(),fpos);
+            fpos = fpos + 4;
+        }
+    }
+
+}
