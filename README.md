@@ -1,12 +1,12 @@
 # eob1-svg-editor
 Savegame editor for Eye of the Beholder 1
 
-> to build:
-> mvn install
+    to build:
+`mvn install`
 
-> to launch
-> cd eob1-svg-editor-ui
-> mvn -q exec:java &
+    to launch:
+`cd eob1-svg-editor-ui`
+`mvn -q exec:java &`
 
 
 # 1.0
@@ -17,8 +17,10 @@ You can change only for active character
 
 # 1.1-SNAPSHOT
 
-You can change only for active character 
+You can change only for active character
 - the food percentage
+- the actual hit points
+- the experience for each class
 
 
 

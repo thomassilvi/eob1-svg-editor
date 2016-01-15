@@ -7,14 +7,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 @SuppressWarnings("serial")
-public class ExceptionalAbilityPanel extends ByteSelectorPanel {
+public class ExceptionalAbilityPanel extends IntSelectorPanel {
 
     protected TextField tfExceptionalScore;
-    protected byte exceptionalScore;
-    protected byte exceptionaNullValue, exceptionaMinValue, exceptionaMaxValue;
+    protected int exceptionalScore;
+    protected int exceptionaNullValue, exceptionaMinValue, exceptionaMaxValue;
     
-    public ExceptionalAbilityPanel(byte parentNullValue, byte parentMinValue, 
-            byte parentMaxValue, byte nullValue, byte minValue, byte maxValue) {
+    public ExceptionalAbilityPanel(int parentNullValue, int parentMinValue, 
+            int parentMaxValue, int nullValue, int minValue, int maxValue) {
         
         super(parentNullValue, parentMinValue, parentMaxValue);
         exceptionaNullValue =  nullValue;
@@ -39,12 +39,12 @@ public class ExceptionalAbilityPanel extends ByteSelectorPanel {
         add(eMinus);
     }
     
-    public void setExceptionalScore(byte value) {
+    public void setExceptionalScore(int value) {
         exceptionalScore = value;
         updateUI();
     }
 
-    public byte getExceptionalScore() {
+    public int getExceptionalScore() {
         return exceptionalScore;
     }
     
