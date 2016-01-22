@@ -26,5 +26,12 @@ public abstract class CharacterClass {
         return "";
     }
     
+    public boolean compareWithClassName(String s) {
+        if (s==null) {
+            return false;
+        }
+        return false;
+    }
+
 }
 

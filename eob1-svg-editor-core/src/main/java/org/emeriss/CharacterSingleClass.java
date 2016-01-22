@@ -44,6 +44,14 @@ public abstract class CharacterSingleClass extends CharacterClass {
     public String getName() {
         return this.name;
     }
+    
+    @Override
+    public boolean compareWithClassName(String s) {
+        if (name==null) {
+                return false;
+        }
+        return name.equals(s);
+    }
 
 }
 

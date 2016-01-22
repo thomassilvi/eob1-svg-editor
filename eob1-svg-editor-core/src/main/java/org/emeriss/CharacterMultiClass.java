@@ -75,4 +75,15 @@ public class CharacterMultiClass extends CharacterClass {
         }
         return result;
     }
+    
+    @Override
+    public boolean compareWithClassName(String s) {
+        for (byte i=0;i<MAX_CLASSES;i++) {
+            if ((classes[i] != null) && (classes[i].compareWithClassName(s))) {
+                return true;
+            }
+        }
+        return false;
+    }    
+    
 }

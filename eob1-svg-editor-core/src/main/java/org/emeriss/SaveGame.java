@@ -167,8 +167,9 @@ public class SaveGame {
 
             // misc
 
+            data[fpos+27] = SaveGameTools.intToUnsignedByte(characters[i].getHitPoints()); 
             data[fpos+35] = characters[i].getFood();
-
+            
             // next character
             fpos += 243;
         }

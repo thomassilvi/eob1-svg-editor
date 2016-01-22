@@ -2,8 +2,10 @@ package org.emeriss;
 
 public class CharacterClassUndefined  extends CharacterSingleClass {
 
+    public static final String CLASS_NAME = "undefined";
+    
     public CharacterClassUndefined(int value) {
-        super(value,"undefined");
+        super(value,CLASS_NAME);
     }
 
 }
