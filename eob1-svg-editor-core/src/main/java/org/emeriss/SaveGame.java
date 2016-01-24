@@ -17,6 +17,8 @@ public class SaveGame {
     private static final int OFFSET_XP_1 = 0x27;
     private static final int OFFSET_LVL_1 = 0x24;    
     
+    protected static final int OFFSET_MAGE_KNOWN_SPELL = 0x73;
+    
     protected Character[] characters;
     protected byte[] data;
     protected String savedFileName;
@@ -80,7 +82,10 @@ public class SaveGame {
                 } else {
                     loadSingleCharacterClass(ccTmp,fpos);
                 }
-                
+
+                // load spells
+                loadMageSpells(i,fpos);
+
                 // next character
                 fpos += 243;
             }
@@ -165,6 +170,9 @@ public class SaveGame {
                 writeSingleCharacterClass(characters[i].getCharacterClass(),fpos);
             }
 
+            // save spells
+            saveMageSpells(i,fpos);
+
             // misc
 
             data[fpos+27] = SaveGameTools.intToUnsignedByte(characters[i].getHitPoints()); 
@@ -243,4 +251,39 @@ public class SaveGame {
         }
     }
 
+    public void loadMageSpells(int characterIndex, int fpos) {
+        CharacterClass cc = characters[characterIndex].getCharacterClass();
+        CharacterClassMage cm = (CharacterClassMage) 
+                CharacterClassTools.getSingleClassWithName(cc,CharacterClassMage.CLASS_NAME);
+        
+        if (cm==null) {
+            return;
+        }
+        
+        int fposTmp = fpos + OFFSET_MAGE_KNOWN_SPELL;
+        int code = SaveGameTools.bytesToInt(data[fposTmp], data[fposTmp+1], 
+                data[fposTmp+2], data[fposTmp+3]);
+
+        Spells spellsTmp = SpellsTools.getMageSpells(code);
+        cm.setSpells(spellsTmp);
+    }
+    
+    public void saveMageSpells(int characterIndex, int fpos) {
+        CharacterClass cc = characters[characterIndex].getCharacterClass();
+        CharacterClassMage cm = (CharacterClassMage) 
+                CharacterClassTools.getSingleClassWithName(cc,CharacterClassMage.CLASS_NAME);
+
+        if (cm==null) {
+            return;
+        }
+        
+        int newCode = SpellsTools.getMageSpellCode(cm.getSpells());
+        byte[] bytesTmp = SaveGameTools.intTo4Bytes(newCode);
+        int fposTmp = fpos + OFFSET_MAGE_KNOWN_SPELL;
+        
+        for (int i=0;i<4;i++) {
+            data[fposTmp+i] = bytesTmp[i];
+        }
+    }
+    
 }

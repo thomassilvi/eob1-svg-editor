@@ -85,5 +85,18 @@ public class CharacterMultiClass extends CharacterClass {
         }
         return false;
     }    
-    
+
+    public CharacterSingleClass getClassWithName(String s) {
+        CharacterSingleClass result;
+
+        result = null;
+        for (byte i=0;i<MAX_CLASSES;i++) {
+            if ((classes[i] != null) && (classes[i].compareWithClassName(s))) {
+                result = classes[i];
+            }
+        }
+        
+        return result;
+    }
+
 }
