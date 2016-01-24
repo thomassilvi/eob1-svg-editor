@@ -6,6 +6,7 @@ Savegame editor for Eye of the Beholder 1
 
     to launch:
 `cd eob1-svg-editor-ui`
+
 `mvn -q exec:java &`
 
 
@@ -21,6 +22,8 @@ You can change only for active character
 - the food percentage
 - the actual hit points
 - the experience for each class
+
+You can activate new spells only for active characters with mage abilities.
 
 
 
