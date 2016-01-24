@@ -18,8 +18,6 @@ public class CharacterPanel extends Panel {
     
     protected Panel panelCharacterStats;
     protected CharacterInfoPanel infoPanel;
-    protected CharacterEquipmentPanel equipmentPanel;
-    protected CharacterInventoryPanel inventoryPanel;
     protected CharacterSpellPanel spellPanel;
     
     public CharacterPanel() {
@@ -31,14 +29,10 @@ public class CharacterPanel extends Panel {
         title.setEditable(false);
  
         infoPanel = new CharacterInfoPanel();
-        equipmentPanel = new CharacterEquipmentPanel();
-        inventoryPanel = new CharacterInventoryPanel();
         spellPanel = new CharacterSpellPanel(); 
 
         JTabbedPane mainTabbedPane = new JTabbedPane();        
         mainTabbedPane.add("Info", infoPanel);
-        mainTabbedPane.add("Equipment", equipmentPanel);
-        mainTabbedPane.add("Inventory", inventoryPanel);
         mainTabbedPane.add("Spell", spellPanel);
         
         add(title,GridBagTools.getGridBagConstraint(0,0));
@@ -65,14 +59,12 @@ public class CharacterPanel extends Panel {
         setTitle(c.getName());
         setCharacterId(c.getId());
         infoPanel.updateWithCharacter(c);
-        equipmentPanel.updateWithCharacter(c);
-        inventoryPanel.updateWithCharacter(c);
+        spellPanel.updateWithCharacter(c);
     }
 
     public void updateCharacter(Character c) throws CharacterUpdateException {
-            infoPanel.updateCharacter(c);
-            equipmentPanel.updateCharacter(c);
-            inventoryPanel.updateCharacter(c);
+        infoPanel.updateCharacter(c);
+        spellPanel.updateCharacter(c);
     }
     
 }

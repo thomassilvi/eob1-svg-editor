@@ -101,7 +101,7 @@ public class Eob1SvgEditor {
     }
     
     protected void quit() {
-        System.exit(0);
+        System.exit(0); // NOSONAR
     }
     
     public static void main(String[] args) {
