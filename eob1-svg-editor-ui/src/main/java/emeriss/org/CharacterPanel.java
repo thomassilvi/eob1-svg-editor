@@ -8,6 +8,7 @@ import java.awt.TextField;
 import javax.swing.JTabbedPane;
 
 import org.emeriss.Character;
+import org.emeriss.CharacterClassTools;
 import org.emeriss.CharacterUpdateException;
 
 
@@ -19,22 +20,22 @@ public class CharacterPanel extends Panel {
     protected Panel panelCharacterStats;
     protected CharacterInfoPanel infoPanel;
     protected CharacterSpellPanel spellPanel;
+    protected JTabbedPane mainTabbedPane;
+    
+    private static final String LABEL_INFO = "Info";
+    private static final String LABEL_SPELLS = "Spells";
     
     public CharacterPanel() {
         super();
         setLayout(new GridBagLayout());
         setBackground(Color.LIGHT_GRAY);
-        
         title = new TextField("",Character.NAME_MAX_LENGTH);
         title.setEditable(false);
- 
         infoPanel = new CharacterInfoPanel();
         spellPanel = new CharacterSpellPanel(); 
-
-        JTabbedPane mainTabbedPane = new JTabbedPane();        
-        mainTabbedPane.add("Info", infoPanel);
-        mainTabbedPane.add("Spell", spellPanel);
-        
+        mainTabbedPane = new JTabbedPane();        
+        mainTabbedPane.add(LABEL_INFO, infoPanel);
+        mainTabbedPane.add(LABEL_SPELLS, spellPanel);
         add(title,GridBagTools.getGridBagConstraint(0,0));
         add(mainTabbedPane,GridBagTools.getGridBagConstraint(0,1));
     }
@@ -55,16 +56,44 @@ public class CharacterPanel extends Panel {
         this.characterId = characterId;
     }
 
+    public void updateSpellsWithCharacter(Character c) {
+        int idx = mainTabbedPane.indexOfTab(LABEL_SPELLS);
+        if (CharacterClassTools.isMage(c)) {
+            if (idx==-1) {
+                if (spellPanel==null) {
+                    spellPanel = new CharacterSpellPanel();
+                }
+                mainTabbedPane.add(LABEL_SPELLS, spellPanel);  
+                spellPanel.updateWithCharacter(c);
+            }
+            spellPanel.updateWithCharacter(c);
+        } else {
+            if (idx==-1) {
+                return;
+            } else {
+                mainTabbedPane.remove(idx);        
+            }
+        }
+    }
+
+    public void updateCharacterSpells(Character c) throws CharacterUpdateException {
+        int idx = mainTabbedPane.indexOfTab(LABEL_SPELLS);
+        if (idx==-1) {
+                return;
+        }
+        spellPanel.updateCharacter(c);
+    }
+    
     public void updateWithCharacter(Character c) {
         setTitle(c.getName());
         setCharacterId(c.getId());
         infoPanel.updateWithCharacter(c);
-        spellPanel.updateWithCharacter(c);
+        updateSpellsWithCharacter(c);
     }
 
     public void updateCharacter(Character c) throws CharacterUpdateException {
         infoPanel.updateCharacter(c);
-        spellPanel.updateCharacter(c);
+        updateCharacterSpells(c);
     }
     
 }
