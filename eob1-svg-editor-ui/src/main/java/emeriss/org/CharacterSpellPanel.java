@@ -11,7 +11,7 @@ import org.emeriss.CharacterClassMage;
 import org.emeriss.CharacterClassTools;
 import org.emeriss.CharacterUpdateException;
 import org.emeriss.Spell;
-import org.emeriss.SpellsTools;
+import org.emeriss.MageSpellsTools;
 
 @SuppressWarnings("serial")
 public class CharacterSpellPanel extends Panel {
@@ -25,7 +25,7 @@ public class CharacterSpellPanel extends Panel {
         mainSpellsTabPanel = new JTabbedPane();
         
         mageSpellPanel = new SpellsPanel();
-        List<Spell> mageSpells = SpellsTools.getMageSpells(0).getSpells();
+        List<Spell> mageSpells = MageSpellsTools.getSpells(0).getSpells();
         mageSpellPanel.load(mageSpells);
         mainSpellsTabPanel.addTab("mage spells", mageSpellPanel);
 
@@ -52,8 +52,8 @@ public class CharacterSpellPanel extends Panel {
         if (cc.compareWithClassName(CharacterClassMage.CLASS_NAME)) {
             CharacterClassMage mageClass = (CharacterClassMage)
                 CharacterClassTools.getSingleClassWithName(cc, 
-                CharacterClassMage.CLASS_NAME);            
-            mageClass.setKnownSpells(mageSpellPanel.getSpellsFromUI());
+                CharacterClassMage.CLASS_NAME); 
+            mageClass.updateSpells(mageSpellPanel.getSpellsFromUI());
         }        
     }
 

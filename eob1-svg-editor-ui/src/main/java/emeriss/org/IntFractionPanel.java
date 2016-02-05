@@ -1,6 +1,5 @@
 package emeriss.org;
 
-import java.awt.Label;
 import java.awt.TextField;
 
 @SuppressWarnings("serial")
@@ -11,28 +10,35 @@ public class IntFractionPanel extends IntSelectorPanel {
     
     public IntFractionPanel(int nullValue, int minValue, int maxValue) {
             super(nullValue, minValue, maxValue);
-            denominator = maxValue;
-            
-            Label lTmp = new Label("/");
-            lTmp.setFont(Eob1SvgEditorFonts.FONT_1);
-            add(lTmp);
-            
-            tfDenominator = new TextField("",3);
-            tfDenominator.setEditable(false);
-            add(tfDenominator);
+            setDenominator(maxValue);
     }
     
     public void setDenominator (int value) {
         denominator = value;
+
         int nColumns=1;
         if (denominator>99) {
             nColumns=3;
         } else if (denominator>9) {
             nColumns=2;
         }
-        tfDenominator.setColumns(nColumns);
-        tfDenominator.setText(Integer.toString(denominator));
-        super.setMaxValue(denominator);
+        nColumns = nColumns * 2 + 1;
+        tfValue.setColumns(nColumns);
+        this.maxValue = denominator;
+        updateUI();
+    }
+
+    @Override
+    protected void updateUI() {
+        tfValue.setText(Integer.toString(value) + " / " + Integer.toString(denominator));
+    }
+
+    public int getDenominator() {
+        return denominator;
     }
 
 }
+
+
+
+
