@@ -28,13 +28,10 @@ public class CharacterClassMage extends CharacterSingleClass {
     public void setSpells(Spells spells) {
         this.spells = spells;
     }
-
-    public void setKnownSpells(List<Spell> sourceList) {
+    
+    public void updateSpells(List<Spell> sourceList) {
         for (Spell spellTmp : sourceList) {
-            if (spellTmp.isKnown()) {
-                spells.setKnown(spellTmp);    
-            }
+            spells.getSpellById(spellTmp.getId()).update(spellTmp);
         }
-    }    
-
+    }
 }

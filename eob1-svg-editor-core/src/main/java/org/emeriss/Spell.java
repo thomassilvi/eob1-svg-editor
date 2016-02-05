@@ -4,11 +4,13 @@ public class Spell implements Comparable<Spell> {
 
     protected String name;
     protected boolean known;
+    protected int id;
     protected int level;
     protected int memorizedCount;
     protected int gainedCount;
     
-    public Spell(String name, int level, boolean isKnown) {
+    public Spell(int id, String name, int level, boolean isKnown) {
+        this.id = id;
         this.name = name;
         this.level = level;
         this.known = isKnown;
@@ -79,4 +81,40 @@ public class Spell implements Comparable<Spell> {
         
         return result;
     }
+    
+    public int getId() {
+        return id;
+    }
+    
+    public void incMemorizedCount() {
+        this.memorizedCount++;
+    }
+    
+    public void incGainedCount() {
+        this.gainedCount++;
+        this.memorizedCount++;
+    }
+
+    public int getMemorizedCount() {
+        return memorizedCount;
+    }
+
+    public int getGainedCount() {
+        return gainedCount;
+    }
+
+    public void setGainedCount(int gainedCount) {
+        this.gainedCount = gainedCount;
+    }
+
+    public void setMemorizedCount(int memorizedCount) {
+        this.memorizedCount = memorizedCount;
+    }
+    
+    public void update(Spell source) {
+        this.known = source.known;
+        this.memorizedCount = source.memorizedCount;
+        this.gainedCount = source.gainedCount;
+    }
+    
 }

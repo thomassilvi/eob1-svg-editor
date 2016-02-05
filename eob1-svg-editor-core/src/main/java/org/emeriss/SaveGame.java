@@ -1,4 +1,4 @@
-package org.emeriss;
+ package org.emeriss;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -12,12 +12,16 @@ public class SaveGame {
 
     public static final int MAX_CHARACTERS = 6;
     public static final int MAX_ACTIVE_CHARACTERS = 4;
-
-    private static final Logger LOGGER = Logger.getLogger(SaveGame.class);
-    private static final int OFFSET_XP_1 = 0x27;
-    private static final int OFFSET_LVL_1 = 0x24;    
     
+    private static final Logger LOGGER = Logger.getLogger(SaveGame.class);
+    
+    protected static final int OFFSET_XP_1 = 0x27;
+    protected static final int OFFSET_LVL_1 = 0x24;
+
     protected static final int OFFSET_MAGE_KNOWN_SPELL = 0x73;
+    protected static final int OFFSET_MAGE_SPELL_START = 0x37;
+    
+    protected static final int OFFSET_CLERIC_SPELL_START = 0x55; // to remove
     
     protected Character[] characters;
     protected byte[] data;
@@ -42,7 +46,7 @@ public class SaveGame {
         try {
             Path p = Paths.get(fileName);
             data = Files.readAllBytes(p);
-
+    
             fpos = 0;
             
             for (i=0;i<MAX_CHARACTERS;i++)
@@ -67,7 +71,7 @@ public class SaveGame {
                 bGender =  (byte) (data[fpos+31] % 2);
                 characters[i].setRace(Race.valueOf(data[fpos+31] - bGender));
                 characters[i].setGender(Gender.valueOf(bGender));
-
+                
                 characters[i].setAlignment(Alignment.valueOf(data[fpos+33]));
                 characters[i].setPortrait(data[fpos+34]);
                 characters[i].setFood(data[fpos+35]);
@@ -82,10 +86,10 @@ public class SaveGame {
                 } else {
                     loadSingleCharacterClass(ccTmp,fpos);
                 }
-
+                
                 // load spells
                 loadMageSpells(i,fpos);
-
+                
                 // next character
                 fpos += 243;
             }
@@ -100,6 +104,10 @@ public class SaveGame {
             LOGGER.error(e);
             throw new SaveGameException("Load failed.");
         }
+    }
+    
+    public void reload() throws SaveGameException {
+        load(savedFileName);
     }
     
     public void show() {
@@ -118,7 +126,7 @@ public class SaveGame {
         
         fpos = 0;
         for (i=0;i<MAX_CHARACTERS;i++) {
-            
+       
             // save active state
             
             if (characters[i].isActive()) {
@@ -140,7 +148,7 @@ public class SaveGame {
             }
 
             // ability base scores
-            
+         
             data[fpos+14] = characters[i].getStrength();
             data[fpos+13] = data[fpos+14];
             
@@ -169,15 +177,16 @@ public class SaveGame {
             } else {
                 writeSingleCharacterClass(characters[i].getCharacterClass(),fpos);
             }
-
-            // save spells
-            saveMageSpells(i,fpos);
-
-            // misc
-
-            data[fpos+27] = SaveGameTools.intToUnsignedByte(characters[i].getHitPoints()); 
-            data[fpos+35] = characters[i].getFood();
             
+            // save spells
+            
+            saveMageSpells(i,fpos);
+            
+            // misc
+            
+            data[fpos+27] = SaveGameTools.intToUnsignedByte(characters[i].getHitPoints());
+            data[fpos+35] = characters[i].getFood();
+
             // next character
             fpos += 243;
         }
@@ -250,7 +259,8 @@ public class SaveGame {
             fpos = fpos + 4;
         }
     }
-
+ 
+    
     public void loadMageSpells(int characterIndex, int fpos) {
         CharacterClass cc = characters[characterIndex].getCharacterClass();
         CharacterClassMage cm = (CharacterClassMage) 
@@ -260,12 +270,30 @@ public class SaveGame {
             return;
         }
         
-        int fposTmp = fpos + OFFSET_MAGE_KNOWN_SPELL;
-        int code = SaveGameTools.bytesToInt(data[fposTmp], data[fposTmp+1], 
+        int fposTmp, codeTmp, i, j;
+        
+        // load known spells
+        
+        fposTmp = fpos + OFFSET_MAGE_KNOWN_SPELL;
+        codeTmp = SaveGameTools.bytesToInt(data[fposTmp], data[fposTmp+1], 
                 data[fposTmp+2], data[fposTmp+3]);
-
-        Spells spellsTmp = SpellsTools.getMageSpells(code);
-        cm.setSpells(spellsTmp);
+        Spells spellsTmp = MageSpellsTools.getSpells(codeTmp);
+        
+        // load memorized and loaded spells
+        
+        fposTmp = fpos + OFFSET_MAGE_SPELL_START;
+        for (i = 1; i <= MageSpellsTools.getMaxLevelsCount(); i++) {
+            for (j=0;j<MageSpellsTools.getMaxSpellsCountByLevel(i);j++) {
+                if (data[fposTmp]!=0) {
+                    MageSpellsTools.updateSpellBook(spellsTmp,data[fposTmp]);
+                }
+                fposTmp++;
+        }
+            
+        cm.setSpells(spellsTmp);  
+    }        
+        
+        
     }
     
     public void saveMageSpells(int characterIndex, int fpos) {
@@ -277,13 +305,37 @@ public class SaveGame {
             return;
         }
         
-        int newCode = SpellsTools.getMageSpellCode(cm.getSpells());
+        int i,j;
+        
+        // save known spells
+        
+        int newCode = MageSpellsTools.getSpellCode(cm.getSpells());
         byte[] bytesTmp = SaveGameTools.intTo4Bytes(newCode);
         int fposTmp = fpos + OFFSET_MAGE_KNOWN_SPELL;
         
-        for (int i=0;i<4;i++) {
+        for (i=0;i<4;i++) {
             data[fposTmp+i] = bytesTmp[i];
+        }
+        
+        // save memorized and loaded spells
+
+        byte[] dataTmp;
+        fposTmp = fpos + OFFSET_MAGE_SPELL_START;
+        
+        for (i=1;i<=MageSpellsTools.getMaxLevelsCount();i++) {
+            dataTmp = MageSpellsTools.getMemorizedAndGained(cm.getSpells(), i);
+            for (j=0;j<dataTmp.length;j++) {
+                data[fposTmp] = dataTmp[j];
+                fposTmp++;
+            }
         }
     }
     
+    
 }
+
+
+
+
+
+

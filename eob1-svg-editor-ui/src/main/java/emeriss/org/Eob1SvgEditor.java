@@ -47,16 +47,21 @@ public class Eob1SvgEditor {
         mainFrame.addWindowListener(new CustomWindowListener());
         MenuBar mb = new MenuBar();
         mainFrame.setMenuBar(mb);
+        
         Menu mf = new Menu("Files");
         mb.add(mf);
         MenuItem miOpen = new MenuItem("Load");
-        mf.add(miOpen);
         miOpen.addActionListener(new ActionLoadListener());
         miOpen.setShortcut(new MenuShortcut(KeyEvent.VK_L));
+        mf.add(miOpen);
         MenuItem miSave = new MenuItem("Save");
+        miSave.addActionListener(new ActionSaveListener());        
         miSave.setShortcut(new MenuShortcut(KeyEvent.VK_S));
         mf.add(miSave);
-        miSave.addActionListener(new ActionSaveListener());
+        MenuItem miReload = new MenuItem("Reload");
+        miReload.addActionListener(new ActionReloadListener());        
+        miReload.setShortcut(new MenuShortcut(KeyEvent.VK_R));
+        mf.add(miReload);
         mf.addSeparator();
         MenuItem miQuit = new MenuItem("Quit");
         miQuit.setShortcut(new MenuShortcut(KeyEvent.VK_Q));
@@ -99,6 +104,10 @@ public class Eob1SvgEditor {
     protected void updateStatusBar(String t) {
         statusBar.setText(t);
     }
+
+    protected void updateStatusBarWithError(Exception e) {
+        statusBar.setText("error: " + e.toString());
+    }    
     
     protected void quit() {
         System.exit(0); // NOSONAR
@@ -187,7 +196,7 @@ public class Eob1SvgEditor {
             }
             catch (Exception ex) {
                 LOGGER.error(ex);
-                updateStatusBar("error:" + ex.toString());
+                updateStatusBarWithError(ex);
         }            
         }
     }
@@ -213,10 +222,37 @@ public class Eob1SvgEditor {
             }
             catch (Exception ex) {
                 LOGGER.error(ex);
-                updateStatusBar("error:" + ex.toString());
+                updateStatusBarWithError(ex);                
             }
                 
         }
-    }    
+    }
+    
+    class ActionReloadListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (!saveGame.isLoaded()) {
+                updateStatusBar("You must load a savegame first.");
+                return;
+            }        
+            try {
+                saveGame.reload();
+                updateStatusBar("File: reloaded");
+                byte cpi = 0;
+                for (byte i=0;i<SaveGame.MAX_CHARACTERS;i++) {
+                    if (saveGame.getCharacter(i).isActive()) {
+                        characterPanels[cpi].updateWithCharacter(saveGame.getCharacter(i));
+                        characterPanels[cpi].active();
+                        cpi++;
+                    }
+                }                
+            }
+            catch (Exception ex) {
+                LOGGER.error(ex);
+                updateStatusBarWithError(ex);                
+            }            
+        }
+        
+    }
     
 }
