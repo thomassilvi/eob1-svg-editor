@@ -23,7 +23,7 @@ public class SpellsPanel extends Panel {
     protected IntFractionPanel[][] spellsMemorizedGained;
     protected int[] rows;
     
-    public SpellsPanel() {
+    public SpellsPanel(boolean withKnown) {
         super();
         setLayout(new GridBagLayout());
         mainTabPanel = new JTabbedPane(JTabbedPane.NORTH);
@@ -44,9 +44,11 @@ public class SpellsPanel extends Panel {
                 spellsName[i][j] = new TextField("",16);    
                 spellsName[i][j].setEditable(false);
                 panelsTmp[i].add(spellsName[i][j],GridBagTools.getGridBagConstraint(0,j));
-                spellsKnown[i][j] = new JCheckBox("",false);
-                spellsKnown[i][j].setEnabled(false);
-                panelsTmp[i].add(spellsKnown[i][j],GridBagTools.getGridBagConstraint(1,j));
+                   spellsKnown[i][j] = new JCheckBox("",false);
+                   spellsKnown[i][j].setEnabled(false);
+                if (withKnown) {
+                    panelsTmp[i].add(spellsKnown[i][j],GridBagTools.getGridBagConstraint(1,j));
+                }
                 spellsMemorizedGained[i][j] = new IntFractionPanel(0,0,0);
                 panelsTmp[i].add(spellsMemorizedGained[i][j],GridBagTools.getGridBagConstraint(2,j));
             }

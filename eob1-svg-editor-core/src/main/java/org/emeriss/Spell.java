@@ -34,8 +34,8 @@ public class Spell implements Comparable<Spell> {
         } else {
             strKnown = "unknown";
         }
-        return String.format("%1$20s(lvl:%2$1d) : %3$5s  %4$2d / %5$2d", 
-                name, level, strKnown, gainedCount, memorizedCount);
+        return String.format("%1$20s(lvl:%2$1d) : %3$5s  %4$2d / %5$2d (id:%6$2d)", 
+                name, level, strKnown, gainedCount, memorizedCount, id);
     }
 
     public boolean isKnown() {
@@ -54,7 +54,12 @@ public class Spell implements Comparable<Spell> {
             return 1;
         }        
         
-        return this.name.compareTo(o.getName());
+        if (o.getId() > this.id) {
+            return -1;
+        } else if (o.getId() < this.id) {
+            return 1;
+        }
+        return 0;
     }
     
     @Override
@@ -66,10 +71,8 @@ public class Spell implements Comparable<Spell> {
             return false;
         }
         Spell s = (Spell) o;
-        if (this.level!=s.getLevel()) {
-            return false;
-        }
-        return this.name.equals(s.getName());
+        
+        return this.id==s.getId();
     }
     
     @Override

@@ -35,7 +35,6 @@ public class CharacterPanel extends Panel {
         spellPanel = new CharacterSpellPanel(); 
         mainTabbedPane = new JTabbedPane();        
         mainTabbedPane.add(LABEL_INFO, infoPanel);
-        mainTabbedPane.add(LABEL_SPELLS, spellPanel);
         add(title,GridBagTools.getGridBagConstraint(0,0));
         add(mainTabbedPane,GridBagTools.getGridBagConstraint(0,1));
     }
@@ -58,7 +57,7 @@ public class CharacterPanel extends Panel {
 
     public void updateSpellsWithCharacter(Character c) {
         int idx = mainTabbedPane.indexOfTab(LABEL_SPELLS);
-        if (CharacterClassTools.isMage(c)) {
+        if (CharacterClassTools.isSpellCaster(c)) {
             if (idx==-1) {
                 if (spellPanel==null) {
                     spellPanel = new CharacterSpellPanel();

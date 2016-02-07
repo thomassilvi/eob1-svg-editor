@@ -21,7 +21,7 @@ public class SaveGame {
     protected static final int OFFSET_MAGE_KNOWN_SPELL = 0x73;
     protected static final int OFFSET_MAGE_SPELL_START = 0x37;
     
-    protected static final int OFFSET_CLERIC_SPELL_START = 0x55; // to remove
+    protected static final int OFFSET_CLERIC_PALADIN_SPELL_START = 0x55;
     
     protected Character[] characters;
     protected byte[] data;
@@ -88,8 +88,11 @@ public class SaveGame {
                 }
                 
                 // load spells
+
                 loadMageSpells(i,fpos);
-                
+                loadClericSpells(i,fpos);
+                loadPaladinSpells(i,fpos);
+
                 // next character
                 fpos += 243;
             }
@@ -179,8 +182,10 @@ public class SaveGame {
             }
             
             // save spells
-            
+
             saveMageSpells(i,fpos);
+            saveClericSpells(i,fpos);
+            savePaladinSpells(i,fpos);
             
             // misc
             
@@ -298,10 +303,10 @@ public class SaveGame {
     
     public void saveMageSpells(int characterIndex, int fpos) {
         CharacterClass cc = characters[characterIndex].getCharacterClass();
-        CharacterClassMage cm = (CharacterClassMage) 
+        CharacterClassMage mage = (CharacterClassMage) 
                 CharacterClassTools.getSingleClassWithName(cc,CharacterClassMage.CLASS_NAME);
 
-        if (cm==null) {
+        if (mage==null) {
             return;
         }
         
@@ -309,7 +314,7 @@ public class SaveGame {
         
         // save known spells
         
-        int newCode = MageSpellsTools.getSpellCode(cm.getSpells());
+        int newCode = MageSpellsTools.getSpellCode(mage.getSpells());
         byte[] bytesTmp = SaveGameTools.intTo4Bytes(newCode);
         int fposTmp = fpos + OFFSET_MAGE_KNOWN_SPELL;
         
@@ -323,7 +328,61 @@ public class SaveGame {
         fposTmp = fpos + OFFSET_MAGE_SPELL_START;
         
         for (i=1;i<=MageSpellsTools.getMaxLevelsCount();i++) {
-            dataTmp = MageSpellsTools.getMemorizedAndGained(cm.getSpells(), i);
+            dataTmp = MageSpellsTools.getMemorizedAndGained(mage.getSpells(), i);
+            for (j=0;j<dataTmp.length;j++) {
+                data[fposTmp] = dataTmp[j];
+                fposTmp++;
+            }
+        }
+
+    }
+    
+    public void loadClericSpells(int characterIndex, int fpos) {
+        CharacterClass cc = characters[characterIndex].getCharacterClass();
+        CharacterClassCleric cleric = (CharacterClassCleric) 
+                CharacterClassTools.getSingleClassWithName(cc,CharacterClassCleric.CLASS_NAME);
+
+        if (cleric==null) {
+            return;
+        }
+
+        int fposTmp, i, j;
+        Spells spellsTmp = ClericSpellsTools.getSpells();
+
+        // load memorized and loaded spells
+
+        fposTmp = fpos + OFFSET_CLERIC_PALADIN_SPELL_START;
+        for (i = 1; i <= ClericSpellsTools.getMaxLevelsCount(); i++) {
+            for (j=0;j<ClericSpellsTools.getMaxSpellsCountByLevel(i);j++) {
+                if (data[fposTmp]!=0) {
+                    ClericSpellsTools.updateSpellBook(spellsTmp,data[fposTmp]);
+                }
+                fposTmp++;
+            }
+        }
+
+        cleric.setSpells(spellsTmp);  
+    }
+    
+    
+    public void saveClericSpells(int characterIndex, int fpos) {
+        CharacterClass cc = characters[characterIndex].getCharacterClass();
+        CharacterClassCleric cleric = (CharacterClassCleric) 
+                CharacterClassTools.getSingleClassWithName(cc,CharacterClassCleric.CLASS_NAME);
+
+        if (cleric==null) {
+            return;
+        }
+
+        // save memorized and loaded spells
+
+        int fposTmp, i, j;
+        
+        byte[] dataTmp;
+        fposTmp = fpos + OFFSET_CLERIC_PALADIN_SPELL_START;
+        
+        for (i=1;i<=ClericSpellsTools.getMaxLevelsCount();i++) {
+            dataTmp = ClericSpellsTools.getMemorizedAndGained(cleric.getSpells(), i);
             for (j=0;j<dataTmp.length;j++) {
                 data[fposTmp] = dataTmp[j];
                 fposTmp++;
@@ -331,6 +390,56 @@ public class SaveGame {
         }
     }
     
+    public void loadPaladinSpells(int characterIndex, int fpos) {
+        CharacterClass cc = characters[characterIndex].getCharacterClass();
+        CharacterClassPaladin paladin = (CharacterClassPaladin) 
+                CharacterClassTools.getSingleClassWithName(cc,CharacterClassPaladin.CLASS_NAME);
+
+        if (paladin==null) {
+            return;
+        }      
+        int fposTmp, i, j;
+        Spells spellsTmp = PaladinSpellsTools.getSpells();
+
+        // load memorized and loaded spells
+
+        fposTmp = fpos + OFFSET_CLERIC_PALADIN_SPELL_START;
+        for (i = 1; i <= PaladinSpellsTools.getMaxLevelsCount(); i++) {
+            for (j=0;j<PaladinSpellsTools.getMaxSpellsCountByLevel(i);j++) {
+                if (data[fposTmp]!=0) {
+                    PaladinSpellsTools.updateSpellBook(spellsTmp,data[fposTmp]);
+                }
+                fposTmp++;
+            }
+        }
+
+        paladin.setSpells(spellsTmp);  
+    }
+    
+    public void savePaladinSpells(int characterIndex, int fpos) {
+        CharacterClass cc = characters[characterIndex].getCharacterClass();
+        CharacterClassPaladin paladin = (CharacterClassPaladin) 
+                CharacterClassTools.getSingleClassWithName(cc,CharacterClassPaladin.CLASS_NAME);
+
+        if (paladin==null) {
+            return;
+        }        
+
+        // save memorized and loaded spells
+
+        int fposTmp, i, j;
+        
+        byte[] dataTmp;
+        fposTmp = fpos + OFFSET_CLERIC_PALADIN_SPELL_START;
+        
+        for (i=1;i<=PaladinSpellsTools.getMaxLevelsCount();i++) {
+            dataTmp = PaladinSpellsTools.getMemorizedAndGained(paladin.getSpells(), i);
+            for (j=0;j<dataTmp.length;j++) {
+                data[fposTmp] = dataTmp[j];
+                fposTmp++;
+            }
+        }
+    }
     
 }
 

@@ -1,6 +1,6 @@
 package org.emeriss;
 
-public class CharacterClassPaladin extends CharacterSingleClass {
+public class CharacterClassPaladin extends CharacterClassSpellCaster {
 
     public static final String CLASS_NAME = "paladin";
     
