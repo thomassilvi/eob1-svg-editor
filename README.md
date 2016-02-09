@@ -24,6 +24,8 @@ You can change only for active character
 - the experience for each class
 
 You can activate new spells only for active characters with mage abilities.
+You can regain memorized spells only for active spellcasters (mage/cleric/paladin).
+The party can rest (full HP/fool and all memorized spells gained)
 
 
 
