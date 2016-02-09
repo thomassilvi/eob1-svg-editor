@@ -1,6 +1,5 @@
 *.class
-
-/target/
+*/target
 */.classpath
 .project
 */.project

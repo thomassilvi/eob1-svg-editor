@@ -440,6 +440,14 @@ public class SaveGame {
             }
         }
     }
+ 
+    public void camp() {
+        for (int i=0;i<MAX_CHARACTERS;i++) {
+            if (characters[i].isActive) {
+                characters[i].camp();
+            }
+        }
+    }
     
 }
 
