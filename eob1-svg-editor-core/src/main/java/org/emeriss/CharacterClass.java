@@ -33,5 +33,8 @@ public abstract class CharacterClass {
         return false;
     }
 
+    public void camp() {
+    }
+    
 }
 

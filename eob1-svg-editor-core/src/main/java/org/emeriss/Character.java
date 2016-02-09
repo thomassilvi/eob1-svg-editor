@@ -221,4 +221,10 @@ public class Character {
     public boolean isMultiClass() {
         return this.characterClass.isMultiClass();
     }
+    
+    public void camp() {
+        hitPoints = maxHitPoints;
+        food = MAX_FOOD_PCT;
+        this.characterClass.camp();
+    }
 }

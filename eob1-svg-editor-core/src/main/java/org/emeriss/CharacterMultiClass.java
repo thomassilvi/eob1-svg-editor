@@ -99,4 +99,12 @@ public class CharacterMultiClass extends CharacterClass {
         return result;
     }
 
+    @Override
+    public void camp() {
+        for (byte i=0;i<MAX_CLASSES;i++) {
+            if (classes[i] != null) {
+                classes[i].camp();
+            }
+        }
+    }
 }

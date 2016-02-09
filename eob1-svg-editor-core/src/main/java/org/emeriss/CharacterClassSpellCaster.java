@@ -33,4 +33,10 @@ public class CharacterClassSpellCaster extends CharacterSingleClass {
         }
     }    
     
+    @Override
+    public void camp() {
+        for (Spell spellTmp : getAllSpells()) {
+            spellTmp.setGainedCount(spellTmp.getMemorizedCount());
+        }
+    }
 }
