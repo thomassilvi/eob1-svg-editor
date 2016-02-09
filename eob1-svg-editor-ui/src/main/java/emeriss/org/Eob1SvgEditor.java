@@ -1,6 +1,7 @@
 package emeriss.org;
 
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FileDialog;
 import java.awt.FlowLayout;
@@ -30,6 +31,7 @@ public class Eob1SvgEditor {
     protected CharacterPanel[] characterPanels;
     
     private static final Logger LOGGER = Logger.getLogger(Eob1SvgEditor.class);
+
     
     public Eob1SvgEditor() {
         saveGame = new SaveGame();
@@ -68,7 +70,12 @@ public class Eob1SvgEditor {
         mf.add(miQuit);
         miQuit.addActionListener(new ActionQuitListener());
         //
-        
+        Menu mMisc = new Menu("Misc");
+        mb.add(mMisc);
+        MenuItem miCamp = new MenuItem("Camp");
+        miCamp.addActionListener(new ActionCampListener());
+        mMisc.add(miCamp);
+        //
         Panel panelCenter = new Panel();
         panelCenter.setLayout(new FlowLayout());
         
@@ -83,6 +90,7 @@ public class Eob1SvgEditor {
         // status bar
         
         Panel panelStatusBar = new Panel();
+        panelStatusBar.setLayout(new BorderLayout());
         statusBar = new Label();
         statusBar.setText("Welcome, please load a savegame");
         statusBar.setBackground(Color.LIGHT_GRAY);
@@ -118,6 +126,24 @@ public class Eob1SvgEditor {
         app.run();
     }
 
+    public void updateUI() {
+        byte cpi = 0;
+        for (byte i=0;i<SaveGame.MAX_CHARACTERS;i++) {
+            if (saveGame.getCharacter(i).isActive()) {
+                characterPanels[cpi].updateWithCharacter(saveGame.getCharacter(i));
+                characterPanels[cpi].active();
+                cpi++;
+            }
+        }        
+    }
+    
+    public boolean isSaveGameNotLoaded() {
+        if (saveGame.isLoaded()) {
+            return false;
+        }
+        updateStatusBar("You must load a savegame first.");
+        return true;
+    }
     
     // inner classes
 
@@ -184,15 +210,8 @@ public class Eob1SvgEditor {
             }
             try {
                 saveGame.load(path+fileName);
-                updateStatusBar("File:"+fileName+" loaded");
-                byte cpi = 0;
-                for (byte i=0;i<SaveGame.MAX_CHARACTERS;i++) {
-                    if (saveGame.getCharacter(i).isActive()) {
-                        characterPanels[cpi].updateWithCharacter(saveGame.getCharacter(i));
-                        characterPanels[cpi].active();
-                        cpi++;
-                    }
-                }
+                updateStatusBar("File loaded.");
+                updateUI();
             }
             catch (Exception ex) {
                 LOGGER.error(ex);
@@ -205,9 +224,7 @@ public class Eob1SvgEditor {
         
         @Override
         public void actionPerformed(ActionEvent e) {
-            
-            if (!saveGame.isLoaded()) {
-                updateStatusBar("You must load a savegame first.");
+            if (isSaveGameNotLoaded()) {
                 return;
             }
 
@@ -231,21 +248,14 @@ public class Eob1SvgEditor {
     class ActionReloadListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (!saveGame.isLoaded()) {
-                updateStatusBar("You must load a savegame first.");
+            if (isSaveGameNotLoaded()) {
                 return;
-            }        
+            }
+
             try {
                 saveGame.reload();
-                updateStatusBar("File: reloaded");
-                byte cpi = 0;
-                for (byte i=0;i<SaveGame.MAX_CHARACTERS;i++) {
-                    if (saveGame.getCharacter(i).isActive()) {
-                        characterPanels[cpi].updateWithCharacter(saveGame.getCharacter(i));
-                        characterPanels[cpi].active();
-                        cpi++;
-                    }
-                }                
+                updateStatusBar("File reloaded");
+                updateUI();                
             }
             catch (Exception ex) {
                 LOGGER.error(ex);
@@ -253,6 +263,19 @@ public class Eob1SvgEditor {
             }            
         }
         
+    }
+    
+    class ActionCampListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (isSaveGameNotLoaded()) {
+                return;
+            }
+
+            saveGame.camp();
+            updateUI();            
+            updateStatusBar("Camp done.");
+        }        
     }
     
 }
