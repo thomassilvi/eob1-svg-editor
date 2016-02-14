@@ -16,7 +16,7 @@ You can change only for active character
 - the name
 - the ability score for strength, intelligence, wisdom, dexterity, constitution and charisma
 
-# 1.1-SNAPSHOT
+# 1.1
 
 You can change only for active character
 - the food percentage
@@ -24,8 +24,10 @@ You can change only for active character
 - the experience for each class
 
 You can activate new spells only for active characters with mage abilities.
+
 You can regain memorized spells only for active spellcasters (mage/cleric/paladin).
-The party can rest (full HP/fool and all memorized spells gained)
+
+The party can rest (full HP/fool and all memorized spells gained).
 
 
 
